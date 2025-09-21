@@ -1,31 +1,30 @@
 using API.Data;
-using API.Interfaces;
-using API.Services;
-
+using API.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace API.Controllers;
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(opt =>
+[Authorize]
+public class MembersController(AppDbContext context) : BaseApiController
 {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection"));
-});
-builder.Services.AddCors();
-builder.Services.AddScoped<ITokenService, TokenService>();
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<AppUser>>> GetMembers()
+    {
+        var members = await context.Users.ToListAsync();
 
-var app = builder.Build();
+        return members;
+    }
 
-app.UseCors(x => x.AllowAnyHeader()
-    .AllowAnyMethod()
-    .WithOrigins(
-        "http://localhost:4200",
-        "https://localhost:4200"
-    ));
+    [AllowAnonymous]
+    [HttpGet("{id}")] // https://localhost:5001/api/members/bob-id
+    public async Task<ActionResult<AppUser>> GetMember(string id)
+    {
+        var member = await context.Users.FindAsync(id);
 
-// Configure the HTTP request pipeline.
-app.MapControllers();
+        if (member == null) return NotFound();
 
-app.Run();
+        return member;
+    }
+}
