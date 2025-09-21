@@ -9,10 +9,12 @@ namespace API.Controllers;
 [Authorize]
 public class MembersController(AppDbContext context) : BaseApiController
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<AppUser>>> GetMembers()
     {
         var members = await context.Users.ToListAsync();
+
         return members;
     }
 
@@ -21,7 +23,9 @@ public class MembersController(AppDbContext context) : BaseApiController
     public async Task<ActionResult<AppUser>> GetMember(string id)
     {
         var member = await context.Users.FindAsync(id);
+
         if (member == null) return NotFound();
+
         return member;
     }
 }

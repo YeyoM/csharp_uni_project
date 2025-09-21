@@ -1,6 +1,3 @@
-using API.Entities;
-using API.Interfaces;
-
 namespace API.DTOs;
 
 public class UserResponse
