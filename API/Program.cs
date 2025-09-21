@@ -1,30 +1,45 @@
+using System.Text;
 using API.Data;
-using API.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
-namespace API.Controllers;
+var builder = WebApplication.CreateBuilder(args);
 
-[Authorize]
-public class MembersController(AppDbContext context) : BaseApiController
+// Add services to the container.
+
+builder.Services.AddControllers();
+builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<AppUser>>> GetMembers()
+    opt.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection"));
+});
+builder.Services.AddCors();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        var members = await context.Users.ToListAsync();
+        var tokenKey = builder.Configuration["TokenKey"]
+            ?? throw new ArgumentNullException("Cannot get the token key - Program.cs");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
-        return members;
-    }
-
-    [AllowAnonymous]
-    [HttpGet("{id}")] // https://localhost:5001/api/members/bob-id
-    public async Task<ActionResult<AppUser>> GetMember(string id)
-    {
-        var member = await context.Users.FindAsync(id);
-
-        if (member == null) return NotFound();
-
-        return member;
-    }
-}
+var app = builder.Build();
+// Configure the HTTP request pipeline.
+app.UseCors(x => x.AllowAnyHeader()
+    .AllowAnyMethod()
+    .WithOrigins(
+        "http://localhost:4200",
+        "https://localhost:4200"
+    ));
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
