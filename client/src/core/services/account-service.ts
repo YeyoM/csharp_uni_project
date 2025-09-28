@@ -4,26 +4,26 @@ import { User } from '../../types/user';
 import { Observable, tap } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AccountService {
-  private http = inject(HttpClient);
-  currentUser = signal<User | null>(null);
-  baseUrl = "https://localhost:5001/api/";
+    private http = inject(HttpClient);
+    currentUser = signal<User | null>(null);
+    baseUrl = "https://localhost:5001/api/";
 
-  login(creds: any): Observable<User> {
-    return this.http.post<User>(this.baseUrl + "account/login", creds).pipe(
-      tap(user => {
-        if (user) {
-          localStorage.setItem("user", JSON.stringify(user));
-          this.currentUser.set(user);
-        }
-      })
-    );
-  }
+    login(creds: any): Observable<User> {
+        return this.http.post<User>(this.baseUrl + "account/login", creds).pipe(
+            tap(user => {
+                if (user) {
+                    localStorage.setItem("user", JSON.stringify(user));
+                    this.currentUser.set(user);
+                }
+            })
+        );
+    }
 
-  logout() {
-    localStorage.removeItem("user");
-    this.currentUser.set(null);
-  }
+    logout() {
+        localStorage.removeItem("user");
+        this.currentUser.set(null);
+    }
 }
