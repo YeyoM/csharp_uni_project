@@ -1,21 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { RegisterCreds } from '../../../types/registerCreds';
 import { FormsModule } from '@angular/forms';
+import { User } from '../../../types/user';
 
 @Component({
-  selector: 'app-register',
-  imports: [FormsModule],
-  templateUrl: './register.html',
-  styleUrl: './register.css'
+    selector: 'app-register',
+    imports: [FormsModule],
+    templateUrl: './register.html',
+    styleUrl: './register.css'
 })
 export class Register {
-  protected creds = {} as RegisterCreds;
+    membersFromHome = input.required<User[]>();
+    protected creds = {} as RegisterCreds;
 
-  register(): void {
-    console.log(this.creds);
-  }
+    register(): void {
+        console.log(this.creds);
+    }
 
-  cancel(): void {
-    console.log("Cancel executed");
-  }
+    cancel(): void {
+        console.log("Cancel executed");
+    }
 }
