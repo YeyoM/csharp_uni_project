@@ -1,5 +1,5 @@
 import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 import { InitService } from '../core/services/init-service';
 import { lastValueFrom } from 'rxjs';
 
@@ -27,6 +27,6 @@ export const appConfig: ApplicationConfig = {
         }, 500);
       });
     }),
-    provideRouter(routes)
+    provideRouter(routes, withViewTransitions())
   ]
 };
