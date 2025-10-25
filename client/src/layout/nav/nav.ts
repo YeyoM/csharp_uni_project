@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../../core/services/account-service';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
@@ -10,6 +10,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './nav.css'
 })
 export class Nav {
+  private router = inject(Router);
   private accountService = inject(AccountService);
   protected creds: any = {};
   protected loggedIn = signal(false);
@@ -17,7 +18,7 @@ export class Nav {
   login(): void {
     this.accountService.login(this.creds).subscribe({
       next: response => {
-        console.log(response);
+        this.router.navigate(['/']);
         this.loggedIn.set(true);
       },
       error: error => alert(error.message)
@@ -26,5 +27,6 @@ export class Nav {
 
   logout(): void {
     this.loggedIn.set(false);
+    this.router.navigateByUrl('/');
   }
 }
