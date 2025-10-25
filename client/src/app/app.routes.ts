@@ -6,10 +6,10 @@ import { Lists } from '../features/lists/lists';
 import { Messages } from '../features/messages/messages';
 
 export const routes: Routes = [
-  { path: "", component: Home },
-  { path: "members", component: MemberList },
-  { path: "members/{id}", component: MemberDetail },
-  { path: "lists", component: Lists },
-  { path: "messages", component: Messages },
-  { path: "**", component: Home }
+    { path: "", component: Home },
+    { path: "members", component: MemberList },
+    { path: "members/{id}", component: MemberDetail },
+    { path: "lists", component: Lists },
+    { path: "messages", component: Messages },
+    { path: "**", component: Home }
 ];
