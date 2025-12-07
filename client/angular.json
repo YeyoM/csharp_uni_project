@@ -13,15 +13,19 @@
         "@schematics/angular:service": {
           "skipTests": false,
           "path": "src/core/services"
+        },
+        "@schematics/angular:guard": {
+          "skipTests": false,
+          "path": "src/core/guard"
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": false,
+          "path": "src/core/interceptors"
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": false,
+          "path": "src"
         }
-      },
-      "@schematics/angular:guard": {
-        "skipTests": false,
-        "path": "src/core/guard"
-      },
-      "@schematics/angular:interceptor": {
-        "skipTests": false,
-        "path": "src/core/interceptors"
       },
       "root": "",
       "sourceRoot": "src",
@@ -109,5 +113,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
